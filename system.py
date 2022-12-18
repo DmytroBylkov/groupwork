@@ -10,7 +10,6 @@ logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 
-# noinspection PyTypeChecker
 @dataclass
 class Employee:
     """Basic employee representation"""
@@ -51,8 +50,6 @@ class Employee:
             msg = "Taking a payout. Remaining vacation days: %d" % remaining
             logger.info(msg)
 
-
-# noinspection PyTypeChecker
 @dataclass
 class HourlyEmployee(Employee):
     """Represents employees who are paid on worked hours base"""
@@ -66,7 +63,7 @@ class HourlyEmployee(Employee):
         self.amount += hours
 
 
-# noinspection PyTypeChecker
+
 @dataclass
 class SalariedEmployee(Employee):
     """Represents employees who are paid on a monthly salary base"""
@@ -74,7 +71,7 @@ class SalariedEmployee(Employee):
     salary: int = 5000
 
 
-# noinspection PyTypeChecker
+
 class Company:
     """A company representation"""
 
@@ -127,4 +124,5 @@ class Company:
     def pay_all(self) -> None:
         """Pay all the employees in this company"""
 
-        # TODO: implement this method
+        for employee in self.employees:
+                self.pay(employee)
