@@ -4,6 +4,7 @@ A very advanced employee management system
 
 import logging
 from dataclasses import dataclass
+import settings as Errors
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger()
@@ -32,24 +33,16 @@ class Employee:
     def take_holiday(self, payout: bool = False) -> None:
         """Take a single holiday or a payout vacation"""
 
-        remaining = self.vacation_days
-        if payout:
-            if self.vacation_days < 5:
-                msg = f"{self} have not enough vacation days. " \
-                      f"Remaining days: %d. Requested: %d" % (remaining, 5)
-                raise ValueError(msg)
-            self.vacation_days -= 5
-            msg = "Taking a holiday. Remaining vacation days: %d" % remaining
+        try:
+            days = 5 if payout else 1
+            if self.vacation_days < days:
+                raise Errors.NoMoreDaysError(self, days)
+
+            self.vacation_days -= days
+            msg = f"{self.fullname} taking a holiday. Remaining vacation days: {self.vacation_days}"
             logger.info(msg)
-        else:
-            if self.vacation_days < 1:
-                remaining = self.vacation_days
-                msg = f"{self} have not enough vacation days. " \
-                      f"Remaining days: %d. Requested: %d" % (remaining, 1)
-                raise ValueError(msg)
-            self.vacation_days -= 1
-            msg = "Taking a payout. Remaining vacation days: %d" % remaining
-            logger.info(msg)
+        except Errors.NoMoreDaysError as DayError:
+            logger.warning(DayError)
 
 
 # noinspection PyTypeChecker
